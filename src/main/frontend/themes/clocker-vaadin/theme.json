@@ -1,0 +1,9 @@
+{
+  "lumoImports" : [ "typography", "color", "spacing", "badge", "utility" ],
+  "assets" : {
+    "@fontsource/anton" : {
+      "*.css" : "@fontsource/anton",
+      "files/*" : "@fontsource/anton/files"
+    }
+  }
+}
