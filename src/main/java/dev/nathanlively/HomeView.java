@@ -4,7 +4,6 @@ import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.Uses;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.UnorderedList;
 import com.vaadin.flow.component.icon.Icon;
@@ -16,21 +15,27 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 @PageTitle("clock")
 @Route(value = "")
 @RouteAlias(value = "")
 @Uses(Icon.class)
 public class HomeView extends Composite<VerticalLayout> {
+    private static final Logger log = LoggerFactory.getLogger(HomeView.class);
+    private final ClockEventService service;
+    private final Button buttonPrimary;
+    private final Button buttonSecondary;
+    private final UnorderedList eventsList;
 
-    public HomeView() {
+    public HomeView(ClockEventService service) {
+        this.service = service;
         HorizontalLayout mainRow = new HorizontalLayout();
         VerticalLayout column1 = new VerticalLayout();
         VerticalLayout column2 = new VerticalLayout();
-
-        Button buttonPrimary = new Button();
-        Button buttonSecondary = new Button();
-        UnorderedList eventsList = new UnorderedList();
 
         getContent().setWidth("100%");
         getContent().getStyle().set("flex-grow", "1");
@@ -42,8 +47,14 @@ public class HomeView extends Composite<VerticalLayout> {
         column1.setJustifyContentMode(JustifyContentMode.CENTER);
         column1.setAlignItems(Alignment.CENTER);
 
-        buttonPrimary.setText("Clock In");
-        buttonSecondary.setText("Clock Out");
+        buttonPrimary = new Button("Clock In", event -> clockIn());
+        buttonSecondary = new Button("Clock Out", event -> clockOut());
+        eventsList = new UnorderedList();
+
+        buttonPrimary.setId("button-primary");
+        buttonSecondary.setId("button-secondary");
+        eventsList.setId("events-list");
+
         buttonPrimary.setWidth("min-content");
         buttonSecondary.setWidth("min-content");
         buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -51,7 +62,9 @@ public class HomeView extends Composite<VerticalLayout> {
         column2.getStyle().set("flex-grow", "1");
         eventsList.setWidth("100%");
         eventsList.setHeight("100%");
-        addSampleEvents(eventsList);
+        addClockEvents();
+        updateButtonVisibility();
+
         getContent().add(mainRow);
         mainRow.add(column1);
         column1.add(buttonPrimary);
@@ -60,26 +73,35 @@ public class HomeView extends Composite<VerticalLayout> {
         column2.add(eventsList);
     }
 
-    private void addSampleEvents(UnorderedList eventsList) {
-        String[] sampleEvents = {
-                "8/15/24 9:12 IN",
-                "8/15/24 17:12 OUT",
-                "8/16/24 9:10 IN",
-                "8/16/24 17:09 OUT"
-        };
+    private void clockIn() {
+        ClockEventView clockEventView = service.clockIn();
+        eventsList.addComponentAsFirst(new ListItem(clockEventView.toString()));
+        updateButtonVisibility();
+    }
 
-        for (String event : sampleEvents) {
-            ListItem item = new ListItem(event);
-            eventsList.add(item);
+    private void clockOut() {
+        ClockEventView clockEventView = service.clockOut();
+        eventsList.addComponentAsFirst(new ListItem(clockEventView.toString()));
+        updateButtonVisibility();
+    }
+
+    void addClockEvents() {
+        List<ClockEventView> allClockEvents = service.all();
+        for (ClockEventView clockEvent : allClockEvents) {
+            log.info("Adding event: {}", clockEvent);
+            eventsList.add(new ListItem(clockEvent.toString()));
         }
     }
 
-    private void setGridSampleData(Grid grid) {
-//        grid.setItems(query -> samplePersonService.list(
-//                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
-//                .stream());
+    private void updateButtonVisibility() {
+        ClockEventType lastEventType = service.getLastClockEventType();
+        if (lastEventType == ClockEventType.IN) {
+            buttonPrimary.setVisible(false);
+            buttonSecondary.setVisible(true);
+        } else {
+            buttonPrimary.setVisible(true);
+            buttonSecondary.setVisible(false);
+        }
     }
 
-//    @Autowired()
-//    private SamplePersonService samplePersonService;
 }
