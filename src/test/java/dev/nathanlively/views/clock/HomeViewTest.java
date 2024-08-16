@@ -1,10 +1,16 @@
 package dev.nathanlively.views.clock;
 
-import com.vaadin.flow.component.UI;
-import dev.nathanlively.HomeView;
+import com.vaadin.flow.component.html.ListItem;
+import com.vaadin.flow.component.html.UnorderedList;
+import dev.nathanlively.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,11 +19,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 class HomeViewTest extends KaribuTest {
 
     private HomeView view;
+    private static final Logger log = LoggerFactory.getLogger(HomeViewTest.class);
+    private ClockRepository repository;
+    private ClockEvent clockInEvent;
 
     @BeforeEach
     public void login() {
-        UI.getCurrent().navigate(HomeView.class);
-        view = _get(HomeView.class);
+        repository = InMemoryClockRepository.createEmpty();
+        clockInEvent = new ClockEvent(ClockService.aug7at8am(), ClockEventType.IN);
+        ClockEventService clockEventService = new ClockEventService(repository, ClockService.fixedAtAug7at8am());
+        view = new HomeView(clockEventService);
     }
 
     @Test
@@ -27,17 +38,20 @@ class HomeViewTest extends KaribuTest {
 
     @Test
     void viewIndex_returnsListOfClockEventViews() {
-        // Arrange: Mock the ClockEventService to return a list of ClockEvent views
-//        List<ClockEvent> mockEvents = List.of(
-//                new ClockEvent(LocalDateTime.now(), ClockEventType.IN),
-//                new ClockEvent(LocalDateTime.now(), ClockEventType.OUT)
-//        );
+        repository.save(clockInEvent);
+        assertThat(repository.findAll()).hasSize(1);
+        UnorderedList eventList = _get(UnorderedList.class, spec -> spec.withId("events-list"));
 
-        // Act: Initialize the View and check if the list is injected correctly.
-//        HomeView homeView = new HomeView(clockEventService);
-//        UnorderedList eventsList = homeView.getContent().getComponentAt(0, UnorderedList.class);
+        assertThat(eventList).isNotNull();
 
-        // Assert: Check if the list contains the expected items
-//        assertThat(eventsList.getComponentCount()).isEqualTo(mockEvents.size());
+
+        List<ListItem> items = eventList.getChildren()
+                .filter(component -> component instanceof ListItem)
+                .map(component -> (ListItem) component)
+                .collect(Collectors.toList());
+
+        items.forEach(item -> log.info(item.getText()));
+
+        assertThat(items).isNotEmpty();
     }
 }
