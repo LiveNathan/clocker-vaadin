@@ -35,7 +35,7 @@ public abstract class KaribuTest {
     @BeforeAll
     public static void discoverRoutes() {
         Locale.setDefault(Locale.ENGLISH);
-        routes = new Routes().autoDiscoverViews("dev.nathanlively.views");
+        routes = new Routes().autoDiscoverViews("dev.nathanlively");
     }
 
     @BeforeEach

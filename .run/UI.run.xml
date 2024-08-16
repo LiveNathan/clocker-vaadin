@@ -7,14 +7,14 @@
     </extension>
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="dev.nathanlively.views.clock.*" />
+        <option name="PATTERN" value="dev.nathanlively.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="ALTERNATIVE_JRE_PATH" value="graalvm-21" />
     <option name="PACKAGE_NAME" value="dev.nathanlively.views.clock" />
-    <option name="MAIN_CLASS_NAME" value="dev.nathanlively.views.clock.ClockMvcTest" />
+    <option name="MAIN_CLASS_NAME" value="dev.nathanlively.views.clock.HomeViewTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="tags" />
     <tag value="ui" />

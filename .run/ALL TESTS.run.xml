@@ -7,7 +7,7 @@
     </extension>
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="dev.nathanlively.views.clock.*" />
+        <option name="PATTERN" value="dev.nathanlively.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

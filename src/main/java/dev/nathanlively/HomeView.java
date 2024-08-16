@@ -1,4 +1,4 @@
-package dev.nathanlively.views.clock;
+package dev.nathanlively;
 
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
@@ -21,9 +21,9 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
 @Route(value = "")
 @RouteAlias(value = "")
 @Uses(Icon.class)
-public class ClockView extends Composite<VerticalLayout> {
+public class HomeView extends Composite<VerticalLayout> {
 
-    public ClockView() {
+    public HomeView() {
         HorizontalLayout mainRow = new HorizontalLayout();
         VerticalLayout column1 = new VerticalLayout();
         VerticalLayout column2 = new VerticalLayout();
