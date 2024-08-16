@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Tag("mvc")
+@Tag("ui")
 class ClockMvcTest extends KaribuTest {
 
     @BeforeEach
