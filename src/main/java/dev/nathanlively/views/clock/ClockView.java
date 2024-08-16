@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.UnorderedList;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
@@ -15,7 +16,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @PageTitle("clock")
 @Route(value = "")
@@ -24,39 +24,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ClockView extends Composite<VerticalLayout> {
 
     public ClockView() {
-        HorizontalLayout layoutRow = new HorizontalLayout();
-        VerticalLayout layoutColumn2 = new VerticalLayout();
+        HorizontalLayout mainRow = new HorizontalLayout();
+        VerticalLayout column1 = new VerticalLayout();
+        VerticalLayout column2 = new VerticalLayout();
+
         Button buttonPrimary = new Button();
         Button buttonSecondary = new Button();
-        VerticalLayout layoutColumn3 = new VerticalLayout();
-        Grid basicGrid = new Grid();  // SamplePerson.class
+        UnorderedList evnetsList = new UnorderedList();
+
         getContent().setWidth("100%");
         getContent().getStyle().set("flex-grow", "1");
-        layoutRow.addClassName(Gap.MEDIUM);
-        layoutRow.setWidth("100%");
-        layoutRow.getStyle().set("flex-grow", "1");
-        layoutColumn2.getStyle().set("flex-grow", "1");
-        layoutColumn2.getStyle().set("flex-grow", "1");
-        layoutColumn2.setJustifyContentMode(JustifyContentMode.CENTER);
-        layoutColumn2.setAlignItems(Alignment.CENTER);
+        mainRow.addClassName(Gap.MEDIUM);
+        mainRow.setWidth("100%");
+        mainRow.getStyle().set("flex-grow", "1");
+        column1.getStyle().set("flex-grow", "1");
+        column1.getStyle().set("flex-grow", "1");
+        column1.setJustifyContentMode(JustifyContentMode.CENTER);
+        column1.setAlignItems(Alignment.CENTER);
         buttonPrimary.setText("Clock In");
-        layoutColumn2.setAlignSelf(FlexComponent.Alignment.CENTER, buttonPrimary);
+        column1.setAlignSelf(FlexComponent.Alignment.CENTER, buttonPrimary);
         buttonPrimary.setWidth("min-content");
         buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         buttonSecondary.setText("Clock Out");
-        layoutColumn2.setAlignSelf(FlexComponent.Alignment.CENTER, buttonSecondary);
+        column1.setAlignSelf(FlexComponent.Alignment.CENTER, buttonSecondary);
         buttonSecondary.setWidth("min-content");
-        layoutColumn3.getStyle().set("flex-grow", "1");
-        layoutColumn3.getStyle().set("flex-grow", "1");
-        basicGrid.setWidth("100%");
-        basicGrid.setHeight("100%");
-        setGridSampleData(basicGrid);
-        getContent().add(layoutRow);
-        layoutRow.add(layoutColumn2);
-        layoutColumn2.add(buttonPrimary);
-        layoutColumn2.add(buttonSecondary);
-        layoutRow.add(layoutColumn3);
-        layoutColumn3.add(basicGrid);
+        column2.getStyle().set("flex-grow", "1");
+        column2.getStyle().set("flex-grow", "1");
+        evnetsList.setWidth("100%");
+        evnetsList.setHeight("100%");
+//        setUnoGridSampleData(basicGrid);
+        getContent().add(mainRow);
+        mainRow.add(column1);
+        column1.add(buttonPrimary);
+        column1.add(buttonSecondary);
+        mainRow.add(column2);
+        column2.add(evnetsList);
     }
 
     private void setGridSampleData(Grid grid) {
