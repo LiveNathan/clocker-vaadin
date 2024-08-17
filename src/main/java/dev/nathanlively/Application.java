@@ -2,19 +2,14 @@ package dev.nathanlively;
 
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import software.xdev.spring.data.eclipse.store.repository.config.EnableEclipseStoreRepositories;
 
-/**
- * The entry point of the Spring Boot application.
- *
- * Use the @PWA annotation make the application installable on phones, tablets
- * and some desktop browsers.
- *
- */
+@PWA(name = "Clocker-Vaadin", shortName = "Clocker")
 @SpringBootApplication
 @EnableEclipseStoreRepositories
 @NpmPackage(value = "@fontsource/anton", version = "4.5.0")

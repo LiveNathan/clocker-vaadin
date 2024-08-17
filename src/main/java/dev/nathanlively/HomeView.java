@@ -14,6 +14,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,83 +26,98 @@ import java.util.List;
 @RouteAlias(value = "")
 @Uses(Icon.class)
 public class HomeView extends Composite<VerticalLayout> {
+
     private static final Logger log = LoggerFactory.getLogger(HomeView.class);
+
     private final ClockEventService service;
-    private final Button buttonPrimary;
-    private final Button buttonSecondary;
+
+    private final Button clockInButton;
+    private final Button clockOutButton;
     private final UnorderedList eventsList;
 
     public HomeView(ClockEventService service) {
         this.service = service;
-        HorizontalLayout mainRow = new HorizontalLayout();
-        VerticalLayout column1 = new VerticalLayout();
-        VerticalLayout column2 = new VerticalLayout();
+        this.clockInButton = createClockInButton();
+        this.clockOutButton = createClockOutButton();
+        this.eventsList = createEventsList();
 
-        getContent().setWidth("100%");
-        getContent().getStyle().set("flex-grow", "1");
-        mainRow.addClassName(Gap.MEDIUM);
+        setupLayout();
+        addClockEvents();
+        updateButtonVisibility();
+    }
+
+    private void setupLayout() {
+        VerticalLayout content = getContent();
+        content.setWidth("100%");
+        content.getStyle().set("flex-grow", "1");
+
+        HorizontalLayout mainRow = new HorizontalLayout();
+        mainRow.addClassNames(Gap.MEDIUM, LumoUtility.Height.SCREEN);
         mainRow.setWidth("100%");
         mainRow.getStyle().set("flex-grow", "1");
 
+        VerticalLayout column1 = new VerticalLayout();
         column1.getStyle().set("flex-grow", "1");
         column1.setJustifyContentMode(JustifyContentMode.CENTER);
         column1.setAlignItems(Alignment.CENTER);
 
-        buttonPrimary = new Button("Clock In", event -> clockIn());
-        buttonSecondary = new Button("Clock Out", event -> clockOut());
-        eventsList = new UnorderedList();
-
-        buttonPrimary.setId("button-primary");
-        buttonSecondary.setId("button-secondary");
-        eventsList.setId("events-list");
-
-        buttonPrimary.setWidth("min-content");
-        buttonSecondary.setWidth("min-content");
-        buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
+        VerticalLayout column2 = new VerticalLayout();
         column2.getStyle().set("flex-grow", "1");
-        eventsList.setWidth("100%");
-        eventsList.setHeight("100%");
-        addClockEvents();
-        updateButtonVisibility();
 
-        getContent().add(mainRow);
-        mainRow.add(column1);
-        column1.add(buttonPrimary);
-        column1.add(buttonSecondary);
-        mainRow.add(column2);
+        column1.add(clockInButton, clockOutButton);
         column2.add(eventsList);
+
+        mainRow.add(column1, column2);
+        content.add(mainRow);
+    }
+
+    private Button createClockInButton() {
+        Button button = new Button("Clock In!!!", event -> clockIn());
+        button.setId("button-primary");
+        button.setWidth("min-content");
+        button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        return button;
+    }
+
+    private Button createClockOutButton() {
+        Button button = new Button("Clock Out", event -> clockOut());
+        button.setId("button-secondary");
+        button.setWidth("min-content");
+        return button;
+    }
+
+    private UnorderedList createEventsList() {
+        UnorderedList list = new UnorderedList();
+        list.setId("events-list");
+        list.setWidth("100%");
+        list.setHeight("100%");
+        return list;
     }
 
     private void clockIn() {
         ClockEventView clockEventView = service.clockIn();
-        eventsList.addComponentAsFirst(new ListItem(clockEventView.toString()));
+        eventsList.addComponentAsFirst(new ListItem(clockEventView.timeStamp()));
         updateButtonVisibility();
     }
 
     private void clockOut() {
         ClockEventView clockEventView = service.clockOut();
-        eventsList.addComponentAsFirst(new ListItem(clockEventView.toString()));
+        eventsList.addComponentAsFirst(new ListItem(clockEventView.timeStamp()));
         updateButtonVisibility();
     }
 
     void addClockEvents() {
         List<ClockEventView> allClockEvents = service.all();
-        for (ClockEventView clockEvent : allClockEvents) {
+        allClockEvents.forEach(clockEvent -> {
             log.info("Adding event: {}", clockEvent);
-            eventsList.add(new ListItem(clockEvent.toString()));
-        }
+            eventsList.add(new ListItem(clockEvent.timeStamp()));
+        });
     }
 
     private void updateButtonVisibility() {
         ClockEventType lastEventType = service.getLastClockEventType();
-        if (lastEventType == ClockEventType.IN) {
-            buttonPrimary.setVisible(false);
-            buttonSecondary.setVisible(true);
-        } else {
-            buttonPrimary.setVisible(true);
-            buttonSecondary.setVisible(false);
-        }
+        boolean isClockedIn = lastEventType == ClockEventType.IN;
+        clockInButton.setVisible(!isClockedIn);
+        clockOutButton.setVisible(isClockedIn);
     }
-
 }
