@@ -1,45 +1,72 @@
-# Clocker
+# Offline Functionality Demo with Vaadin + Spring Boot
 
-This project can be used as a starting point to create your own Vaadin application with Spring Boot.
-It contains all the necessary configuration and some placeholder files to get you started.
+This demo project showcases the implementation of offline functionality in a Vaadin + Spring Boot web application. The main focus is on caching POST requests and resending them when the application regains connectivity. The project uses a combination of Java, Spring Boot, Vaadin, and other tools to deliver a seamless offline experience. See [the previous version](https://github.com/LiveNathan/clocker-spring) made without Vaadin.
 
-## Running the application
+The use case is a labor management app that needs to handle requests when an employee's device is temporarily offline.
 
-The project is a standard Maven project. To run it from the command line,
-type `mvnw` (Windows), or `./mvnw` (Mac & Linux), then open
-http://localhost:8080 in your browser.
+## Features
 
-You can also import the project to your IDE of choice as you would with any
-Maven project. Read more on [how to import Vaadin projects to different IDEs](https://vaadin.com/docs/latest/guide/step-by-step/importing) (Eclipse, IntelliJ IDEA, NetBeans, and VS Code).
+- **Service Worker Integration:** Caches POST requests made while offline and resends them automatically when back online.
+- **Vaadin:** Provides a modern, server-side UI framework with built-in PWA features.
+
+## Technologies Used
+
+- **Java**
+- **Spring Boot**
+- **Vaadin**
+- **Service Worker API**
+
+## Running the Application
+
+1. **Clone the repository:**
+
+2. **Build and run the project:**
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+
+3. **Open the application:**
+  - Open your browser and navigate to [http://localhost:8080](http://localhost:8080).
+  - Open Chrome Developer Tools (F12 or right-click and select "Inspect").
+
+4. **Check Service Worker Installation:**
+  - In the Developer Tools, go to the "Application" tab.
+  - Under the "Service Workers" section, you should see that the service worker is installed.
+
+## Observing the Offline Functionality
+
+1. **Going Offline:**
+  - It's important to note that simply checking the "Offline" box in Chrome DevTools is not sufficient for testing service worker requests. You need to **physically disconnect your internet connection** (e.g., turn off Wi-Fi or disconnect the network cable).
+
+2. **Interacting with the App:**
+  - While offline, click the "Clock In/Out" button.
+  - The page will not visibly change, but check the console logs in DevTools. You should see a message indicating that the request has been "stashed" for later.
+
+3. **Returning Online:**
+  - Reconnect your internet connection.
+  - The previously stashed POST request will be automatically resent, and the page will refresh to reflect the new state.
+
+## Additional Details
+
+- **Console Logs:** The application logs actions such as the stashing of requests and the resending process to the console, allowing you to track the behavior of the service worker.
+- **Known Issue:** There might be a slight delay in refreshing the page after going back online, depending on the network conditions and how quickly the request is processed.
 
 ## Deploying to Production
 
-To create a production build, call `mvnw clean package -Pproduction` (Windows),
-or `./mvnw clean package -Pproduction` (Mac & Linux).
-This will build a JAR file with all the dependencies and front-end resources,
-ready to be deployed. The file can be found in the `target` folder after the build completes.
+To create a production build, use the following command:
+```bash
+./mvnw clean package -Pproduction
+```
 
-Once the JAR file is built, you can run it using
-`java -jar target/clocker-vaadin-1.0-SNAPSHOT.jar`
+This will build a JAR file with all the dependencies and front-end resources, ready to be deployed. You can run the production build using:
+```bash
+java -jar target/clocker-vaadin-1.0-SNAPSHOT.jar
+```
 
-## Project structure
+## Contributing
 
-- `MainLayout.java` in `src/main/java` contains the navigation setup (i.e., the
-  side/top bar and the main menu). This setup uses
-  [App Layout](https://vaadin.com/docs/components/app-layout).
-- `views` package in `src/main/java` contains the server-side Java views of your application.
-- `views` folder in `src/main/frontend` contains the client-side JavaScript views of your application.
-- `themes` folder in `src/main/frontend` contains the custom CSS styles.
+If you have suggestions or improvements, feel free to open an issue or submit a pull request.
 
-## Useful links
+## License
 
-- Read the documentation at [vaadin.com/docs](https://vaadin.com/docs).
-- Follow the tutorial at [vaadin.com/docs/latest/tutorial/overview](https://vaadin.com/docs/latest/tutorial/overview).
-- Create new projects at [start.vaadin.com](https://start.vaadin.com/).
-- Search UI components and their usage examples at [vaadin.com/docs/latest/components](https://vaadin.com/docs/latest/components).
-- View use case applications that demonstrate Vaadin capabilities at [vaadin.com/examples-and-demos](https://vaadin.com/examples-and-demos).
-- Build any UI without custom CSS by discovering Vaadin's set of [CSS utility classes](https://vaadin.com/docs/styling/lumo/utility-classes). 
-- Find a collection of solutions to common use cases at [cookbook.vaadin.com](https://cookbook.vaadin.com/).
-- Find add-ons at [vaadin.com/directory](https://vaadin.com/directory).
-- Ask questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/vaadin) or join our [Discord channel](https://discord.gg/MYFq5RTbBn).
-- Report issues, create pull requests in [GitHub](https://github.com/vaadin).
+This project is licensed under the MIT License.

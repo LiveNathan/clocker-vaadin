@@ -27,6 +27,7 @@ class HomeViewTest extends KaribuTest {
     public void login() {
         repository = InMemoryClockRepository.createEmpty();
         clockInEvent = new ClockEvent(ClockService.aug7at8am(), ClockEventType.IN);
+        repository.save(clockInEvent);
         ClockEventService clockEventService = new ClockEventService(repository, ClockService.fixedAtAug7at8am());
         view = new HomeView(clockEventService);
     }
@@ -38,7 +39,6 @@ class HomeViewTest extends KaribuTest {
 
     @Test
     void viewIndex_returnsListOfClockEventViews() {
-        repository.save(clockInEvent);
         assertThat(repository.findAll()).hasSize(1);
         UnorderedList eventList = _get(UnorderedList.class, spec -> spec.withId("events-list"));
 
